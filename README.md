@@ -45,6 +45,47 @@ Le système implémente un workflow séquentiel strict avec gestion d'états :
 
 ---
 
+## 👥 Scénarios Utilisateurs Détaillés
+
+Le système gère trois profils distincts avec des permissions et des flux d'actions spécifiques.
+
+### 👨‍🎓 1. L'Étudiant
+*L'initiateur du projet.*
+
+*   **S'authentifier :** Connexion sécurisée via Login/Mot de passe.
+*   **Scénario A (Postuler) :** Consulter la liste des offres publiées par les sociétés ("DISPO") et choisir un encadrant. Le projet passe directement en `ATTENTE` (Validation Prof).
+*   **Scénario B (Proposer) :** Remplir un formulaire de proposition personnelle (Titre, Durée, Société ciblée, Encadrant). Le projet passe en `ATTENTE_SOC`.
+*   **Suivi Visuel :**
+    *   🟡 **Cadre Jaune** : En attente de la Société.
+    *   🔵 **Cadre Bleu** : Société OK, en attente du Professeur.
+    *   🟢 **Cadre Vert** : Félicitations ! Projet validé (Interface verrouillée).
+    *   🔴 **Cadre Rouge** : Refus. L'étudiant peut soit acquitter (supprimer), soit choisir un autre prof.
+
+### 🏢 2. La Société
+*Le partenaire industriel.*
+
+*   **S'authentifier :** Connexion simple par nom d'entreprise.
+*   **Publier une Offre :** Ajouter un sujet de stage avec titre et durée dans le catalogue commun.
+*   **Gérer les Propositions :**
+    *   Recevoir les propositions spontanées des étudiants (Zone de notification dédiée).
+    *   **Accepter** : Le projet est validé par l'entreprise et transmis au professeur (`ATTENTE_PROF`).
+    *   **Refuser** : Le projet est rejeté (`REFUSE_SOC`).
+*   **Suivi :** Consulter la liste de tous ses projets avec leur état (Disponible, En attente Prof, Attribué).
+
+### 👨‍🏫 3. Le Professeur
+*Le garant pédagogique.*
+
+*   **S'authentifier :** Connexion sécurisée.
+*   **Recevoir des Alertes (Temps Réel) :**
+    *   Grâce au **Client Lourd (Swing)** connecté via JMS, le professeur reçoit une **Popup instantanée** sur son bureau dès qu'une action requiert son attention (nouvelle demande ou validation société).
+*   **Valider les Projets (Web) :**
+    *   Consulter la liste des demandes en attente.
+    *   **Valider** : Le projet devient officiel (`AFFECTE`). L'étudiant et la société sont notifiés (visuellement).
+    *   **Refuser** : L'étudiant est notifié et invité à trouver un autre encadrant (l'accord de la société reste acquis).
+*   **Encadrement :** Voir la liste définitive des étudiants sous sa responsabilité.
+
+---
+
 ## 📦 Structure du Projet (Maven)
 
 Le projet est divisé en modules pour respecter la séparation des préoccupations :
@@ -79,12 +120,12 @@ Le projet est divisé en modules pour respecter la séparation des préoccupatio
 4.  **Accéder à l'application** :
     *   Ouvrir le navigateur : `http://localhost:8080`
 
+---
+
 ## 📸 Aperçu
 
-*L'interface s'adapte dynamiquement selon le rôle connecté.*
-
-*   **Étudiant** : Tableau de bord avec statut coloré (Jaune/Bleu/Vert/Rouge) selon l'avancement.
-*   **Société** : Gestion des offres et validation des propositions entrantes.
-*   **Professeur** : Centre de validation et liste des encadrements.
+L'interface utilisateur a été conçue avec un design moderne (Glassmorphism), adaptatif et intuitif pour offrir une expérience fluide à chaque acteur.
 
 ---
+
+Projet Académique Systèmes Répartis
